@@ -66,10 +66,12 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return response()->json(null,204);
     }
 }
