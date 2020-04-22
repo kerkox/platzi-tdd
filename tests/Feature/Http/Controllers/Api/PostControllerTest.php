@@ -17,7 +17,7 @@ class PostControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_store()
+    public function test_post_store()
     {
 //        $this->withoutExceptionHandling();
         $response = $this->json('POST','/api/posts', [
@@ -31,7 +31,7 @@ class PostControllerTest extends TestCase
         $this->assertDatabaseHas('posts', ['title' => 'El post de prueba']);
     }
 
-    public function test_validate_title()
+    public function test_post_validate_title()
     {
 //        $this->withoutExceptionHandling();
         $response = $this->json('POST','/api/posts', [
@@ -42,7 +42,7 @@ class PostControllerTest extends TestCase
             ->assertJsonValidationErrors('title');
     }
 
-    public function test_show()
+    public function test_post_show()
     {
         $post = factory(Post::class)->create();
 
@@ -52,11 +52,27 @@ class PostControllerTest extends TestCase
             ->assertJson(['title' => $post->title])
             ->assertStatus(200); //Ok
     }
-    public function test_404_show()
+    public function test_post_404_show()
     {
 
         $response = $this->json('GET',"/api/posts/1000");
 
         $response->assertStatus(404); //Ok
+    }
+
+    public function test_post_update()
+    {
+//        $this->withoutExceptionHandling();
+        $post = factory(Post::class)->create();
+        $title = "nuevo";
+        $response = $this->json('PUT',"/api/posts/$post->id", [
+            'title' => $title
+        ]);
+
+        $response->assertJsonStructure(['id', 'title', 'created_at', 'updated_at'])
+            ->assertJson(['title' => $title])
+            ->assertStatus(200); //Ok
+
+        $this->assertDatabaseHas('posts', ['title' => $title]);
     }
 }
