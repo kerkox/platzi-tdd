@@ -18,6 +18,7 @@ class PostControllerTest extends TestCase
      */
     public function test_store()
     {
+//        $this->withoutExceptionHandling();
         $response = $this->json('POST','/api/posts', [
             'title' => 'El post de prueba'
             ]);
@@ -27,5 +28,16 @@ class PostControllerTest extends TestCase
         ->assertStatus(201); //Ok, creado un recurso
 
         $this->assertDatabaseHas('posts', ['title' => 'El post de prueba']);
+    }
+
+    public function test_validate_title()
+    {
+//        $this->withoutExceptionHandling();
+        $response = $this->json('POST','/api/posts', [
+            'title' => ''
+        ]);
+        //Estatus HTTP
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('title');
     }
 }
